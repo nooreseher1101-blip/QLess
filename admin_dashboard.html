@@ -1,0 +1,1319 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | QLess</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+
+        :root {
+            --dark-navy: #0B1F33;
+            --primary-navy: #17365D;
+            --secondary-blue: #456789;
+            --light-bg: #F3F5F8;
+            --text-dark: #263238;
+            --text-muted: #6C757D;
+            --sidebar-width: 250px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: var(--dark-navy);
+            padding: 25px 17px;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .brand {
+            color: white;
+            font-size: 26px;
+            font-weight: 800;
+            text-decoration: none;
+            display: block;
+            padding: 0 12px 30px;
+            border-bottom: 1px solid #29445F;
+        }
+
+        .brand i {
+            color: #AFC8E8;
+            margin-right: 7px;
+        }
+
+        .sidebar-label {
+            color: #8295AA;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            margin: 28px 12px 12px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 6px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            color: #C2CEDA;
+            text-decoration: none;
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .sidebar-menu a i {
+            font-size: 17px;
+            margin-right: 13px;
+            width: 20px;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: #17365D;
+            color: white;
+        }
+
+        .sidebar-menu a.active {
+            border-left: 3px solid #AFC8E8;
+        }
+
+        .sidebar-bottom {
+            border-top: 1px solid #29445F;
+            padding-top: 15px;
+            margin-top: 30px;
+        }
+
+        /* MAIN CONTENT */
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+        }
+
+        /* TOPBAR */
+
+        .topbar {
+            height: 78px;
+            background-color: white;
+            border-bottom: 1px solid #E8ECF1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 35px;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .page-title h5 {
+            color: var(--dark-navy);
+            font-size: 18px;
+            font-weight: 750;
+            margin-bottom: 4px;
+        }
+
+        .page-title small {
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-btn {
+            position: relative;
+            color: var(--secondary-blue);
+            font-size: 21px;
+            text-decoration: none;
+        }
+
+        .notification-dot {
+            position: absolute;
+            width: 7px;
+            height: 7px;
+            background-color: #DC3545;
+            border-radius: 50%;
+            top: 2px;
+            right: 0;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: #EAF0F7;
+            color: var(--primary-navy);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .profile-info h6 {
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .profile-info small {
+            color: var(--text-muted);
+            font-size: 10px;
+        }
+
+        /* DASHBOARD CONTENT */
+
+        .dashboard-content {
+            padding: 30px 35px;
+        }
+
+        .welcome-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .welcome-section h3 {
+            font-size: 23px;
+            font-weight: 800;
+            color: var(--dark-navy);
+            margin-bottom: 7px;
+        }
+
+        .welcome-section p {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .date-label {
+            background-color: white;
+            border: 1px solid #E4E9EF;
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: var(--secondary-blue);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* ANALYTICS SECTION */
+
+        .analytics-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 17px;
+        }
+
+        .analytics-heading h5 {
+            color: var(--dark-navy);
+            font-size: 16px;
+            font-weight: 750;
+            margin-bottom: 5px;
+        }
+
+        .analytics-heading p {
+            color: var(--text-muted);
+            font-size: 11px;
+            margin: 0;
+        }
+
+        .analytics-period {
+            background: white;
+            color: var(--secondary-blue);
+            border: 1px solid #E2E7ED;
+            border-radius: 7px;
+            padding: 8px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .analytics-card {
+            background: white;
+            border: 1px solid #E8ECF1;
+            border-radius: 14px;
+            padding: 22px;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .analytics-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 28px rgba(11,31,51,0.09);
+        }
+
+        .analytics-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--card-color);
+        }
+
+        .analytics-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .analytics-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            background: var(--icon-bg);
+            color: var(--card-color);
+        }
+
+        .analytics-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 6px 9px;
+            border-radius: 20px;
+            background: var(--icon-bg);
+            color: var(--card-color);
+        }
+
+        .analytics-label {
+            color: #6C757D;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+
+        .analytics-value {
+            color: #0B1F33;
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+        }
+
+        .analytics-progress {
+            height: 5px;
+            background: #EDF0F4;
+            border-radius: 10px;
+            margin-top: 12px;
+            overflow: hidden;
+        }
+
+        .analytics-progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            background: var(--card-color);
+        }
+
+        .analytics-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #6C757D;
+            margin-top: 15px;
+        }
+
+        /* SECTION CARDS */
+
+        .content-card {
+            background-color: white;
+            border: 1px solid #E8ECF1;
+            border-radius: 12px;
+            padding: 23px;
+            height: 100%;
+        }
+
+        .card-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+        .card-heading h5 {
+            color: var(--dark-navy);
+            font-size: 15px;
+            font-weight: 750;
+            margin: 0;
+        }
+
+        .view-link {
+            color: var(--secondary-blue);
+            font-size: 11px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .view-link:hover {
+            color: var(--dark-navy);
+        }
+
+        /* QUEUE TABLE */
+
+        .table {
+            vertical-align: middle;
+            min-width: 570px;
+        }
+
+        .table thead th {
+            background-color: #F5F7FA;
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 13px 12px;
+            border: none;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            padding: 15px 12px;
+            font-size: 11px;
+            color: var(--text-dark);
+            border-bottom: 1px solid #EDF0F4;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .token-number {
+            font-weight: 700;
+            color: var(--primary-navy);
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .status-waiting {
+            background-color: #FFF3CD;
+            color: #856404;
+        }
+
+        .status-serving {
+            background-color: #DCEBFA;
+            color: #174B7A;
+        }
+
+        .status-completed {
+            background-color: #DDF3E5;
+            color: #198754;
+        }
+
+        /* DEPARTMENT LIST */
+
+        .department-row {
+            display: flex;
+            align-items: center;
+            padding: 13px 0;
+            border-bottom: 1px solid #EDF0F4;
+        }
+
+        .department-row:last-child {
+            border-bottom: none;
+        }
+
+        .department-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 9px;
+            background-color: #EAF0F7;
+            color: var(--primary-navy);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-right: 12px;
+        }
+
+        .department-info {
+            flex: 1;
+        }
+
+        .department-info h6 {
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--dark-navy);
+        }
+
+        .department-info small {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .department-count {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--secondary-blue);
+        }
+
+        /* QUICK ACTIONS */
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 14px;
+            background-color: #F5F7FA;
+            border: 1px solid #E8ECF1;
+            border-radius: 9px;
+            text-decoration: none;
+            color: var(--dark-navy);
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 11px;
+            transition: 0.3s;
+        }
+
+        .action-btn:hover {
+            background-color: #EAF0F7;
+            color: var(--primary-navy);
+            transform: translateX(3px);
+        }
+
+        .action-btn i:first-child {
+            font-size: 18px;
+            margin-right: 12px;
+            color: var(--secondary-blue);
+        }
+
+        .action-btn i:last-child {
+            margin-left: auto;
+            font-size: 14px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 991px) {
+
+            .sidebar {
+                width: 70px;
+                padding: 20px 10px;
+            }
+
+            .brand {
+                font-size: 0;
+                padding: 0 12px 25px;
+            }
+
+            .brand i {
+                font-size: 25px;
+            }
+
+            .sidebar-label,
+            .sidebar-menu span {
+                display: none;
+            }
+
+            .sidebar-menu a {
+                justify-content: center;
+                padding: 13px 5px;
+            }
+
+            .sidebar-menu a i {
+                margin: 0;
+                font-size: 20px;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+            .sidebar-bottom {
+                margin-top: 20px;
+            }
+
+        }
+
+        @media (max-width: 576px) {
+
+            .topbar {
+                padding: 0 15px;
+            }
+
+            .dashboard-content {
+                padding: 22px 15px;
+            }
+
+            .profile-info {
+                display: none;
+            }
+
+            .welcome-section {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .welcome-section h3 {
+                font-size: 20px;
+            }
+
+            .date-label {
+                font-size: 10px;
+            }
+
+            .content-card {
+                padding: 17px;
+            }
+
+            .analytics-card {
+                padding: 16px;
+            }
+
+            .analytics-value {
+                font-size: 25px;
+            }
+
+            .analytics-heading {
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <a href="admin-dashboard.html" class="brand">
+            <i class="bi bi-hourglass-split"></i>QLess
+        </a>
+
+
+        <p class="sidebar-label">MAIN MENU</p>
+
+        <ul class="sidebar-menu">
+
+            <li>
+                <a href="admin-dashboard.html" class="active">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="bi bi-diagram-3"></i>
+                    <span>Departments</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="bi bi-display"></i>
+                    <span>Counters</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="bi bi-people"></i>
+                    <span>Staff Management</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="bi bi-person-lines-fill"></i>
+                    <span>Users</span>
+                </a>
+            </li>
+
+        </ul>
+
+
+        <p class="sidebar-label">QUEUE MANAGEMENT</p>
+
+        <ul class="sidebar-menu">
+
+            <li>
+                <a href="#">
+                    <i class="bi bi-ticket-perforated"></i>
+                    <span>All Queues</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Queue History</span>
+                </a>
+            </li>
+
+        </ul>
+
+
+        <p class="sidebar-label">SYSTEM</p>
+
+        <ul class="sidebar-menu">
+
+            <li>
+                <a href="#">
+                    <i class="bi bi-bar-chart"></i>
+                    <span>Reports & Analytics</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="bi bi-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+
+        </ul>
+
+
+        <div class="sidebar-bottom">
+
+            <ul class="sidebar-menu">
+
+                <li>
+                    <a href="index.html">
+                        <i class="bi bi-box-arrow-left"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-content">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div class="page-title">
+
+                <h5>Admin Dashboard</h5>
+
+                <small>Manage your university queue system</small>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <a href="#" class="notification-btn">
+                    <i class="bi bi-bell"></i>
+                    <span class="notification-dot"></span>
+                </a>
+
+
+                <div class="admin-profile">
+
+                    <div class="profile-avatar">
+                        A
+                    </div>
+
+                    <div class="profile-info">
+
+                        <h6>Administrator</h6>
+
+                        <small>System Admin</small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- DASHBOARD BODY -->
+
+        <section class="dashboard-content">
+
+
+            <!-- WELCOME SECTION -->
+
+            <div class="welcome-section">
+
+                <div>
+
+                    <h3>Welcome, Administrator!</h3>
+
+                    <p>
+                        Here's what's happening across your university today.
+                    </p>
+
+                </div>
+
+                <div class="date-label">
+                    <i class="bi bi-calendar3 me-2"></i>
+                    Dashboard Overview
+                </div>
+
+            </div>
+
+
+            <!-- ANALYTICS HEADING -->
+
+            <div class="analytics-heading">
+
+                <div>
+
+                    <h5>System Overview</h5>
+
+                    <p>
+                        Key statistics across all university departments
+                    </p>
+
+                </div>
+
+                <select class="analytics-period">
+                    <option>Today</option>
+                    <option>This Week</option>
+                    <option>This Month</option>
+                </select>
+
+            </div>
+
+
+            <!-- ANALYTICS CARDS -->
+
+            <div class="row g-3 mb-4">
+
+
+                <!-- TOTAL DEPARTMENTS -->
+
+                <div class="col-6 col-xl-3">
+
+                    <div class="analytics-card"
+                         style="--card-color:#456789; --icon-bg:#EAF0F7;">
+
+                        <div class="analytics-header">
+
+                            <div class="analytics-icon">
+                                <i class="bi bi-diagram-3"></i>
+                            </div>
+
+                            <span class="analytics-badge">
+                                <i class="bi bi-check-circle-fill"></i> Active
+                            </span>
+
+                        </div>
+
+                        <div class="analytics-label">
+                            Total Departments
+                        </div>
+
+                        <div class="analytics-value">08</div>
+
+                        <div class="analytics-progress">
+                            <div class="analytics-progress-bar"
+                                 style="width:80%">
+                            </div>
+                        </div>
+
+                        <div class="analytics-footer">
+                            <span>University departments</span>
+                            <span>08 Total</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TOTAL COUNTERS -->
+
+                <div class="col-6 col-xl-3">
+
+                    <div class="analytics-card"
+                         style="--card-color:#198754; --icon-bg:#E5F4EC;">
+
+                        <div class="analytics-header">
+
+                            <div class="analytics-icon">
+                                <i class="bi bi-display"></i>
+                            </div>
+
+                            <span class="analytics-badge">
+                                <i class="bi bi-check-circle-fill"></i> Active
+                            </span>
+
+                        </div>
+
+                        <div class="analytics-label">
+                            Total Counters
+                        </div>
+
+                        <div class="analytics-value">24</div>
+
+                        <div class="analytics-progress">
+                            <div class="analytics-progress-bar"
+                                 style="width:75%">
+                            </div>
+                        </div>
+
+                        <div class="analytics-footer">
+                            <span>Across all departments</span>
+                            <span>24 Total</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- REGISTERED STAFF -->
+
+                <div class="col-6 col-xl-3">
+
+                    <div class="analytics-card"
+                         style="--card-color:#7652A5; --icon-bg:#F0EAF8;">
+
+                        <div class="analytics-header">
+
+                            <div class="analytics-icon">
+                                <i class="bi bi-people"></i>
+                            </div>
+
+                            <span class="analytics-badge">
+                                <i class="bi bi-person-check-fill"></i> Staff
+                            </span>
+
+                        </div>
+
+                        <div class="analytics-label">
+                            Registered Staff
+                        </div>
+
+                        <div class="analytics-value">32</div>
+
+                        <div class="analytics-progress">
+                            <div class="analytics-progress-bar"
+                                 style="width:65%">
+                            </div>
+                        </div>
+
+                        <div class="analytics-footer">
+                            <span>Assigned employees</span>
+                            <span>32 Total</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIVE QUEUES -->
+
+                <div class="col-6 col-xl-3">
+
+                    <div class="analytics-card"
+                         style="--card-color:#E69500; --icon-bg:#FFF3E0;">
+
+                        <div class="analytics-header">
+
+                            <div class="analytics-icon">
+                                <i class="bi bi-ticket-perforated"></i>
+                            </div>
+
+                            <span class="analytics-badge"
+                                  style="color:#B77900; background:#FFF3CD;">
+                                <i class="bi bi-circle-fill"></i> Live
+                            </span>
+
+                        </div>
+
+                        <div class="analytics-label">
+                            Active Queue Tokens
+                        </div>
+
+                        <div class="analytics-value">46</div>
+
+                        <div class="analytics-progress">
+                            <div class="analytics-progress-bar"
+                                 style="width:60%">
+                            </div>
+                        </div>
+
+                        <div class="analytics-footer">
+                            <span>Currently in queues</span>
+                            <span>46 Active</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- QUEUE TABLE AND DEPARTMENTS -->
+
+            <div class="row g-4 mb-4">
+
+
+                <!-- RECENT QUEUE ACTIVITY -->
+
+                <div class="col-xl-8">
+
+                    <div class="content-card">
+
+                        <div class="card-heading">
+
+                            <h5>Recent Queue Activity</h5>
+
+                            <a href="#" class="view-link">
+                                View All
+                                <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+
+                        </div>
+
+
+                        <div class="table-responsive">
+
+                            <table class="table mb-0">
+
+                                <thead>
+
+                                    <tr>
+                                        <th>Token</th>
+                                        <th>Department</th>
+                                        <th>Counter</th>
+                                        <th>Time</th>
+                                        <th>Status</th>
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                    <tr>
+
+                                        <td class="token-number">A-021</td>
+                                        <td>Academic Office</td>
+                                        <td>Counter 02</td>
+                                        <td>10:15 AM</td>
+
+                                        <td>
+                                            <span class="status status-serving">
+                                                Serving
+                                            </span>
+                                        </td>
+
+                                    </tr>
+
+
+                                    <tr>
+
+                                        <td class="token-number">F-014</td>
+                                        <td>Accounts Office</td>
+                                        <td>Counter 01</td>
+                                        <td>10:20 AM</td>
+
+                                        <td>
+                                            <span class="status status-waiting">
+                                                Waiting
+                                            </span>
+                                        </td>
+
+                                    </tr>
+
+
+                                    <tr>
+
+                                        <td class="token-number">E-009</td>
+                                        <td>Examination Office</td>
+                                        <td>Counter 03</td>
+                                        <td>10:25 AM</td>
+
+                                        <td>
+                                            <span class="status status-completed">
+                                                Completed
+                                            </span>
+                                        </td>
+
+                                    </tr>
+
+
+                                    <tr>
+
+                                        <td class="token-number">S-032</td>
+                                        <td>Student Affairs</td>
+                                        <td>Counter 01</td>
+                                        <td>10:30 AM</td>
+
+                                        <td>
+                                            <span class="status status-waiting">
+                                                Waiting
+                                            </span>
+                                        </td>
+
+                                    </tr>
+
+
+                                    <tr>
+
+                                        <td class="token-number">A-022</td>
+                                        <td>Academic Office</td>
+                                        <td>Counter 01</td>
+                                        <td>10:35 AM</td>
+
+                                        <td>
+                                            <span class="status status-serving">
+                                                Serving
+                                            </span>
+                                        </td>
+
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DEPARTMENTS -->
+
+                <div class="col-xl-4">
+
+                    <div class="content-card">
+
+                        <div class="card-heading">
+
+                            <h5>Departments</h5>
+
+                            <a href="#" class="view-link">
+                                Manage
+                            </a>
+
+                        </div>
+
+
+                        <div class="department-row">
+
+                            <div class="department-icon">
+                                <i class="bi bi-mortarboard"></i>
+                            </div>
+
+                            <div class="department-info">
+                                <h6>Academic Office</h6>
+                                <small>4 Counters</small>
+                            </div>
+
+                            <span class="department-count">12</span>
+
+                        </div>
+
+
+                        <div class="department-row">
+
+                            <div class="department-icon">
+                                <i class="bi bi-cash-stack"></i>
+                            </div>
+
+                            <div class="department-info">
+                                <h6>Accounts Office</h6>
+                                <small>3 Counters</small>
+                            </div>
+
+                            <span class="department-count">08</span>
+
+                        </div>
+
+
+                        <div class="department-row">
+
+                            <div class="department-icon">
+                                <i class="bi bi-person-badge"></i>
+                            </div>
+
+                            <div class="department-info">
+                                <h6>Student Affairs</h6>
+                                <small>2 Counters</small>
+                            </div>
+
+                            <span class="department-count">15</span>
+
+                        </div>
+
+
+                        <div class="department-row">
+
+                            <div class="department-icon">
+                                <i class="bi bi-patch-check"></i>
+                            </div>
+
+                            <div class="department-info">
+                                <h6>Examination Office</h6>
+                                <small>3 Counters</small>
+                            </div>
+
+                            <span class="department-count">11</span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- QUICK ACTIONS -->
+
+            <div class="row g-4">
+
+                <div class="col-12">
+
+                    <div class="content-card">
+
+                        <div class="card-heading">
+                            <h5>Quick Actions</h5>
+                        </div>
+
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6 col-lg-3">
+
+                                <a href="#" class="action-btn">
+                                    <i class="bi bi-plus-circle"></i>
+                                    Add Department
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+
+                            </div>
+
+
+                            <div class="col-md-6 col-lg-3">
+
+                                <a href="#" class="action-btn">
+                                    <i class="bi bi-display"></i>
+                                    Manage Counters
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+
+                            </div>
+
+
+                            <div class="col-md-6 col-lg-3">
+
+                                <a href="#" class="action-btn">
+                                    <i class="bi bi-person-plus"></i>
+                                    Add Staff Member
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+
+                            </div>
+
+
+                            <div class="col-md-6 col-lg-3">
+
+                                <a href="#" class="action-btn">
+                                    <i class="bi bi-bar-chart-line"></i>
+                                    View Reports
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+    <!-- BOOTSTRAP JS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

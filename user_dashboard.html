@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>User Dashboard | QLess</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+
+        :root {
+            --dark-navy: #0B1F33;
+            --primary-navy: #17365D;
+            --secondary-blue: #456789;
+            --light-bg: #F3F5F8;
+            --text-dark: #263238;
+            --text-muted: #6C757D;
+            --sidebar-width: 250px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light-bg);
+            color: var(--text-dark);
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: var(--dark-navy);
+            padding: 25px 17px;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .brand {
+            color: white;
+            font-size: 26px;
+            font-weight: 800;
+            text-decoration: none;
+            display: block;
+            padding: 0 12px 30px;
+            border-bottom: 1px solid #29445F;
+        }
+
+        .brand i {
+            color: #AFC8E8;
+            margin-right: 7px;
+        }
+
+        .sidebar-label {
+            color: #8295AA;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            margin: 28px 12px 12px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 6px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            color: #C2CEDA;
+            text-decoration: none;
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .sidebar-menu a i {
+            font-size: 17px;
+            margin-right: 13px;
+            width: 20px;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: var(--primary-navy);
+            color: white;
+        }
+
+        .sidebar-menu a.active {
+            border-left: 3px solid #AFC8E8;
+        }
+
+        .sidebar-bottom {
+            border-top: 1px solid #29445F;
+            padding-top: 15px;
+            margin-top: 30px;
+        }
+
+        /* MAIN CONTENT */
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+        }
+
+        /* TOPBAR */
+
+        .topbar {
+            height: 78px;
+            background: white;
+            border-bottom: 1px solid #E8ECF1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 35px;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .page-title h5 {
+            color: var(--dark-navy);
+            font-size: 18px;
+            font-weight: 750;
+            margin-bottom: 4px;
+        }
+
+        .page-title small {
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-btn {
+            position: relative;
+            color: var(--secondary-blue);
+            font-size: 21px;
+            text-decoration: none;
+        }
+
+        .notification-dot {
+            position: absolute;
+            width: 7px;
+            height: 7px;
+            background: #DC3545;
+            border-radius: 50%;
+            top: 2px;
+            right: 0;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #EAF0F7;
+            color: var(--primary-navy);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .profile-info h6 {
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .profile-info small {
+            color: var(--text-muted);
+            font-size: 10px;
+        }
+
+        /* DASHBOARD CONTENT */
+
+        .dashboard-content {
+            padding: 30px 35px;
+        }
+
+        .welcome-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .welcome-section h3 {
+            font-size: 23px;
+            font-weight: 800;
+            color: var(--dark-navy);
+            margin-bottom: 7px;
+        }
+
+        .welcome-section p {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin: 0;
+        }
+
+        /* WELCOME BADGE */
+
+        .welcome-badge {
+            background: white;
+            border: 1px solid #E4E9EF;
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: var(--secondary-blue);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* SECTION HEADING */
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 17px;
+        }
+
+        .section-heading h5 {
+            color: var(--dark-navy);
+            font-size: 16px;
+            font-weight: 750;
+            margin-bottom: 5px;
+        }
+
+        .section-heading p {
+            color: var(--text-muted);
+            font-size: 11px;
+            margin: 0;
+        }
+
+        /* ACTIVE TOKEN */
+
+        .active-token-card {
+            background: linear-gradient(120deg, #17365D, #294F78);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .active-token-card::after {
+            content: "";
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border: 35px solid rgba(255,255,255,0.06);
+            border-radius: 50%;
+            right: -70px;
+            top: -70px;
+        }
+
+        .token-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .token-top h6 {
+            font-size: 13px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .live-badge {
+            background: rgba(255,255,255,0.15);
+            color: #B9F6D0;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .token-number {
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-top: 22px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .token-department {
+            color: #D5E2EF;
+            font-size: 12px;
+            margin-top: 3px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .token-details {
+            display: flex;
+            gap: 35px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .token-detail small {
+            display: block;
+            color: #C3D4E5;
+            font-size: 10px;
+            margin-bottom: 7px;
+        }
+
+        .token-detail h5 {
+            font-size: 17px;
+            font-weight: 750;
+            margin: 0;
+        }
+
+        .token-progress {
+            margin-top: 22px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .token-progress p {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #D5E2EF;
+            margin-bottom: 8px;
+        }
+
+        .token-progress .progress {
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .token-progress .progress-bar {
+            background: #AFC8E8;
+        }
+
+        .token-action {
+            display: inline-block;
+            margin-top: 20px;
+            background: white;
+            color: var(--primary-navy);
+            padding: 9px 16px;
+            border-radius: 7px;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+            transition: 0.3s;
+        }
+
+        .token-action:hover {
+            background: #EAF0F7;
+            color: var(--dark-navy);
+        }
+
+        /* NO ACTIVE TOKEN */
+
+        .no-token-card {
+            background: white;
+            border: 1px solid #E8ECF1;
+            border-radius: 15px;
+            padding: 30px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .no-token-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 15px;
+            background: #EAF0F7;
+            color: var(--primary-navy);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+            margin-bottom: 15px;
+        }
+
+        .no-token-card h5 {
+            color: var(--dark-navy);
+            font-size: 15px;
+            font-weight: 750;
+        }
+
+        .no-token-card p {
+            color: var(--text-muted);
+            font-size: 11px;
+            max-width: 260px;
+            line-height: 1.7;
+        }
+
+        .primary-btn {
+            background: var(--primary-navy);
+            color: white;
+            border: none;
+            border-radius: 7px;
+            padding: 10px 18px;
+            font-size: 11px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .primary-btn:hover {
+            background: var(--dark-navy);
+            color: white;
+        }
+
+        /* DEPARTMENT CARDS */
+
+        .department-card {
+            background: white;
+            border: 1px solid #E8ECF1;
+            border-radius: 12px;
+            padding: 20px;
+            height: 100%;
+            transition: 0.3s;
+        }
+
+        .department-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 22px rgba(11,31,51,0.07);
+        }
+
+        .department-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 11px;
+            background: #EAF0F7;
+            color: var(--primary-navy);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            margin-bottom: 17px;
+        }
+
+        .department-card h6 {
+            color: var(--dark-navy);
+            font-size: 13px;
+            font-weight: 750;
+            margin-bottom: 7px;
+        }
+
+        .department-card p {
+            color: var(--text-muted);
+            font-size: 10px;
+            line-height: 1.6;
+            min-height: 32px;
+            margin-bottom: 15px;
+        }
+
+        .department-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid #EDF0F4;
+        }
+
+        .queue-count {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .queue-count strong {
+            color: var(--primary-navy);
+            font-size: 12px;
+        }
+
+        .join-btn {
+            background: #EAF0F7;
+            color: var(--primary-navy);
+            padding: 7px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .join-btn:hover {
+            background: var(--primary-navy);
+            color: white;
+        }
+
+        /* GENERAL CONTENT CARD */
+
+        .content-card {
+            background: white;
+            border: 1px solid #E8ECF1;
+            border-radius: 12px;
+            padding: 22px;
+            height: 100%;
+        }
+
+        .card-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-heading h5 {
+            color: var(--dark-navy);
+            font-size: 15px;
+            font-weight: 750;
+            margin: 0;
+        }
+
+        .view-link {
+            color: var(--secondary-blue);
+            font-size: 11px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* HISTORY TABLE */
+
+        .table {
+            vertical-align: middle;
+            min-width: 520px;
+        }
+
+        .table thead th {
+            background: #F5F7FA;
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 12px;
+            border: none;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            padding: 14px 12px;
+            font-size: 11px;
+            color: var(--text-dark);
+            border-bottom: 1px solid #EDF0F4;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .token-id {
+            color: var(--primary-navy);
+            font-weight: 700;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .status-waiting {
+            background: #FFF3CD;
+            color: #856404;
+        }
+
+        .status-completed {
+            background: #DDF3E5;
+            color: #198754;
+        }
+
+        .status-cancelled {
+            background: #FCE4E4;
+            color: #DC3545;
+        }
+
+        /* QUICK LINKS */
+
+        .quick-link {
+            display: flex;
+            align-items: center;
+            padding: 13px;
+            border: 1px solid #E8ECF1;
+            background: #F8F9FB;
+            border-radius: 9px;
+            text-decoration: none;
+            color: var(--dark-navy);
+            margin-bottom: 11px;
+            transition: 0.3s;
+        }
+
+        .quick-link:hover {
+            background: #EAF0F7;
+            transform: translateX(3px);
+        }
+
+        .quick-link-icon {
+            width: 36px;
+            height: 36px;
+            background: #EAF0F7;
+            color: var(--primary-navy);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            margin-right: 12px;
+        }
+
+        .quick-link span {
+            font-size: 11px;
+            font-weight: 650;
+        }
+
+        .quick-link > i:last-child {
+            margin-left: auto;
+            font-size: 13px;
+            color: var(--secondary-blue);
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 991px) {
+
+            .sidebar {
+                width: 70px;
+                padding: 20px 10px;
+            }
+
+            .brand {
+                font-size: 0;
+                padding: 0 12px 25px;
+            }
+
+            .brand i {
+                font-size: 25px;
+            }
+
+            .sidebar-label,
+            .sidebar-menu span {
+                display: none;
+            }
+
+            .sidebar-menu a {
+                justify-content: center;
+                padding: 13px 5px;
+            }
+
+            .sidebar-menu a i {
+                margin: 0;
+                font-size: 20px;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+        }
+
+        @media (max-width: 576px) {
+
+            .topbar {
+                padding: 0 15px;
+            }
+
+            .dashboard-content {
+                padding: 22px 15px;
+            }
+
+            .profile-info {
+                display: none;
+            }
+
+            .welcome-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 13px;
+            }
+
+            .welcome-section h3 {
+                font-size: 20px;
+            }
+
+            .token-details {
+                gap: 20px;
+            }
+
+            .active-token-card {
+                padding: 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <a href="user-dashboard.html" class="brand">
+            <i class="bi bi-hourglass-split"></i>QLess
+        </a>
+
+
+        <p class="sidebar-label">MAIN MENU</p>
+
+        <ul class="sidebar-menu">
+
+            <li>
+                <a href="user-dashboard.html" class="active">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#departments">
+                    <i class="bi bi-building"></i>
+                    <span>Departments</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#active-token">
+                    <i class="bi bi-ticket-perforated"></i>
+                    <span>My Active Token</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#history">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Queue History</span>
+                </a>
+            </li>
+
+        </ul>
+
+
+        <p class="sidebar-label">ACCOUNT</p>
+
+        <ul class="sidebar-menu">
+
+            <li>
+                <a href="#">
+                    <i class="bi bi-person-circle"></i>
+                    <span>My Profile</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="bi bi-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+
+        </ul>
+
+
+        <div class="sidebar-bottom">
+
+            <ul class="sidebar-menu">
+
+                <li>
+                    <a href="index.html">
+                        <i class="bi bi-box-arrow-left"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-content">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div class="page-title">
+
+                <h5>User Dashboard</h5>
+
+                <small>Manage your university visits and queue tokens</small>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <a href="#" class="notification-btn">
+                    <i class="bi bi-bell"></i>
+                    <span class="notification-dot"></span>
+                </a>
+
+
+                <div class="user-profile">
+
+                    <div class="profile-avatar">
+                        U
+                    </div>
+
+                    <div class="profile-info">
+
+                        <h6>John Doe</h6>
+
+                        <small>User Account</small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- DASHBOARD BODY -->
+
+        <section class="dashboard-content">
+
+
+            <!-- WELCOME SECTION -->
+
+            <div class="welcome-section">
+
+                <div>
+
+                    <h3>Welcome Back, John!</h3>
+
+                    <p>
+                        Access university services without waiting in long queues.
+                    </p>
+
+                </div>
+
+                <div class="welcome-badge">
+
+                    <i class="bi bi-calendar3 me-2"></i>
+                    Your Service Dashboard
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIVE TOKEN SECTION -->
+
+            <div class="section-heading" id="active-token">
+
+                <div>
+
+                    <h5>Your Queue Status</h5>
+
+                    <p>Keep track of your current queue activity.</p>
+
+                </div>
+
+            </div>
+
+
+            <div class="row g-3 mb-4">
+
+
+                <!-- ACTIVE TOKEN CARD -->
+
+                <div class="col-lg-7">
+
+                    <div class="active-token-card">
+
+                        <div class="token-top">
+
+                            <h6>
+                                <i class="bi bi-ticket-perforated me-2"></i>
+                                Your Active Token
+                            </h6>
+
+                            <span class="live-badge">
+                                <i class="bi bi-circle-fill me-1"></i>
+                                IN QUEUE
+                            </span>
+
+                        </div>
+
+
+                        <div class="token-number">
+                            A-025
+                        </div>
+
+                        <div class="token-department">
+                            Academic Office · Counter 02
+                        </div>
+
+
+                        <div class="token-details">
+
+                            <div class="token-detail">
+
+                                <small>Your Queue Position</small>
+
+                                <h5>04</h5>
+
+                            </div>
+
+
+                            <div class="token-detail">
+
+                                <small>Estimated Waiting Time</small>
+
+                                <h5>15 min</h5>
+
+                            </div>
+
+
+                            <div class="token-detail">
+
+                                <small>Currently Serving</small>
+
+                                <h5>A-021</h5>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="token-progress">
+
+                            <p>
+                                <span>Queue Progress</span>
+                                <span>60%</span>
+                            </p>
+
+                            <div class="progress">
+
+                                <div class="progress-bar"
+                                     style="width:60%">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <a href="#" class="token-action">
+                            Track My Token
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- JOIN QUEUE CARD -->
+
+                <div class="col-lg-5">
+
+                    <div class="no-token-card">
+
+                        <div class="no-token-icon">
+                            <i class="bi bi-plus-circle"></i>
+                        </div>
+
+                        <h5>Need Another Service?</h5>
+
+                        <p>
+                            Select a university department and join its queue
+                            digitally. Save your time and avoid physical lines.
+                        </p>
+
+                        <a href="#departments" class="primary-btn">
+                            Explore Departments
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- DEPARTMENTS -->
+
+            <div class="section-heading" id="departments">
+
+                <div>
+
+                    <h5>Available Departments</h5>
+
+                    <p>
+                        Choose the department for your required university service.
+                    </p>
+
+                </div>
+
+                <a href="#" class="view-link">
+                    View All
+                    <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+
+            </div>
+
+
+            <div class="row g-3 mb-4">
+
+
+                <!-- ACADEMIC OFFICE -->
+
+                <div class="col-md-6 col-xl-3">
+
+                    <div class="department-card">
+
+                        <div class="department-icon">
+                            <i class="bi bi-mortarboard"></i>
+                        </div>
+
+                        <h6>Academic Office</h6>
+
+                        <p>
+                            Academic records, transcripts, certificates
+                            and enrollment inquiries.
+                        </p>
+
+                        <div class="department-footer">
+
+                            <div class="queue-count">
+                                Waiting:
+                                <strong>08</strong>
+                            </div>
+
+                            <a href="#" class="join-btn">
+                                Join Queue
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACCOUNTS OFFICE -->
+
+                <div class="col-md-6 col-xl-3">
+
+                    <div class="department-card">
+
+                        <div class="department-icon">
+                            <i class="bi bi-cash-stack"></i>
+                        </div>
+
+                        <h6>Accounts Office</h6>
+
+                        <p>
+                            Fee submissions, payment records
+                            and financial inquiries.
+                        </p>
+
+                        <div class="department-footer">
+
+                            <div class="queue-count">
+                                Waiting:
+                                <strong>05</strong>
+                            </div>
+
+                            <a href="#" class="join-btn">
+                                Join Queue
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- STUDENT AFFAIRS -->
+
+                <div class="col-md-6 col-xl-3">
+
+                    <div class="department-card">
+
+                        <div class="department-icon">
+                            <i class="bi bi-person-badge"></i>
+                        </div>
+
+                        <h6>Student Affairs</h6>
+
+                        <p>
+                            General university services, guidance
+                            and administrative assistance.
+                        </p>
+
+                        <div class="department-footer">
+
+                            <div class="queue-count">
+                                Waiting:
+                                <strong>12</strong>
+                            </div>
+
+                            <a href="#" class="join-btn">
+                                Join Queue
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EXAMINATION OFFICE -->
+
+                <div class="col-md-6 col-xl-3">
+
+                    <div class="department-card">
+
+                        <div class="department-icon">
+                            <i class="bi bi-journal-check"></i>
+                        </div>
+
+                        <h6>Examination Office</h6>
+
+                        <p>
+                            Examination schedules, results
+                            and examination-related queries.
+                        </p>
+
+                        <div class="department-footer">
+
+                            <div class="queue-count">
+                                Waiting:
+                                <strong>06</strong>
+                            </div>
+
+                            <a href="#" class="join-btn">
+                                Join Queue
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- QUEUE HISTORY AND QUICK LINKS -->
+
+            <div class="row g-4">
+
+
+                <!-- QUEUE HISTORY -->
+
+                <div class="col-xl-8" id="history">
+
+                    <div class="content-card">
+
+                        <div class="card-heading">
+
+                            <h5>Recent Queue Activity</h5>
+
+                            <a href="#" class="view-link">
+                                View History
+                                <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+
+                        </div>
+
+
+                        <div class="table-responsive">
+
+                            <table class="table mb-0">
+
+                                <thead>
+
+                                    <tr>
+                                        <th>Token</th>
+                                        <th>Department</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Status</th>
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                    <tr>
+
+                                        <td class="token-id">A-025</td>
+                                        <td>Academic Office</td>
+                                        <td>Today</td>
+                                        <td>10:30 AM</td>
+
+                                        <td>
+                                            <span class="status status-waiting">
+                                                Waiting
+                                            </span>
+                                        </td>
+
+                                    </tr>
+
+
+                                    <tr>
+
+                                        <td class="token-id">F-018</td>
+                                        <td>Accounts Office</td>
+                                        <td>Yesterday</td>
+                                        <td>11:15 AM</td>
+
+                                        <td>
+                                            <span class="status status-completed">
+                                                Completed
+                                            </span>
+                                        </td>
+
+                                    </tr>
+
+
+                                    <tr>
+
+                                        <td class="token-id">S-011</td>
+                                        <td>Student Affairs</td>
+                                        <td>08 Nov 2026</td>
+                                        <td>09:45 AM</td>
+
+                                        <td>
+                                            <span class="status status-completed">
+                                                Completed
+                                            </span>
+                                        </td>
+
+                                    </tr>
+
+
+                                    <tr>
+
+                                        <td class="token-id">E-006</td>
+                                        <td>Examination Office</td>
+                                        <td>05 Nov 2026</td>
+                                        <td>12:20 PM</td>
+
+                                        <td>
+                                            <span class="status status-cancelled">
+                                                Cancelled
+                                            </span>
+                                        </td>
+
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- QUICK LINKS -->
+
+                <div class="col-xl-4">
+
+                    <div class="content-card">
+
+                        <div class="card-heading">
+
+                            <h5>Quick Access</h5>
+
+                        </div>
+
+
+                        <a href="#departments" class="quick-link">
+
+                            <div class="quick-link-icon">
+                                <i class="bi bi-plus-circle"></i>
+                            </div>
+
+                            <span>Join a New Queue</span>
+
+                            <i class="bi bi-chevron-right"></i>
+
+                        </a>
+
+
+                        <a href="#active-token" class="quick-link">
+
+                            <div class="quick-link-icon">
+                                <i class="bi bi-ticket-perforated"></i>
+                            </div>
+
+                            <span>Track My Token</span>
+
+                            <i class="bi bi-chevron-right"></i>
+
+                        </a>
+
+
+                        <a href="#history" class="quick-link">
+
+                            <div class="quick-link-icon">
+                                <i class="bi bi-clock-history"></i>
+                            </div>
+
+                            <span>View Queue History</span>
+
+                            <i class="bi bi-chevron-right"></i>
+
+                        </a>
+
+
+                        <a href="#" class="quick-link">
+
+                            <div class="quick-link-icon">
+                                <i class="bi bi-person-circle"></i>
+                            </div>
+
+                            <span>Manage My Profile</span>
+
+                            <i class="bi bi-chevron-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+    <!-- BOOTSTRAP JS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
