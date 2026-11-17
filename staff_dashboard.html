@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard | QueueLess</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+
+        body {
+            background: #f4f6fa;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+        }
+
+        :root {
+            --primary: #142b4a;
+            --secondary: #24476b;
+            --light-bg: #f4f6fa;
+        }
+
+        /* Sidebar */
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background: var(--primary);
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 25px 18px;
+            color: white;
+        }
+
+        .brand {
+            font-size: 23px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            padding-left: 10px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            color: #c5d0df;
+            text-decoration: none;
+            padding: 13px 15px;
+            margin-bottom: 8px;
+            border-radius: 9px;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #294767;
+            color: white;
+        }
+
+        .sidebar a i {
+            font-size: 18px;
+        }
+
+        /* Main Content */
+
+        .main-content {
+            margin-left: 250px;
+            padding: 25px 35px;
+        }
+
+        /* Topbar */
+
+        .topbar {
+            background: white;
+            padding: 16px 25px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-icon {
+            width: 42px;
+            height: 42px;
+            background: #e8edf4;
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+        }
+
+        /* Statistics */
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            height: 100%;
+        }
+
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card h3 {
+            font-size: 27px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-card p {
+            color: #78869a;
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+
+        /* General Cards */
+
+        .content-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            height: 100%;
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 650;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        /* Current Token */
+
+        .current-token {
+            background: #f2f5f9;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .token-number {
+            font-size: 48px;
+            font-weight: 750;
+            color: var(--primary);
+            margin: 8px 0;
+        }
+
+        .token-label {
+            font-size: 13px;
+            color: #7a8798;
+        }
+
+        .btn-primary-custom {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 11px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .btn-primary-custom:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-outline-custom {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .btn-outline-custom:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Table */
+
+        .table th {
+            color: #7b8797;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            border-bottom: 1px solid #edf0f4;
+        }
+
+        .table td {
+            padding: 15px 10px;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        .badge-waiting {
+            background: #fff3d8;
+            color: #a66a00;
+            padding: 6px 10px;
+            border-radius: 20px;
+        }
+
+        .badge-completed {
+            background: #e0f4e9;
+            color: #23834c;
+            padding: 6px 10px;
+            border-radius: 20px;
+        }
+
+        /* Responsive */
+
+        @media(max-width: 768px) {
+
+            .sidebar {
+                width: 70px;
+                padding: 20px 10px;
+            }
+
+            .brand {
+                font-size: 0;
+                text-align: center;
+            }
+
+            .brand i {
+                font-size: 25px;
+            }
+
+            .sidebar a {
+                justify-content: center;
+                padding: 13px 5px;
+                font-size: 0;
+            }
+
+            .sidebar a i {
+                font-size: 20px;
+            }
+
+            .main-content {
+                margin-left: 70px;
+                padding: 15px;
+            }
+
+            .topbar {
+                padding: 15px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+
+    <div class="sidebar">
+
+        <div class="brand">
+            <i class="bi bi-layers-half"></i> QueueLess
+        </div>
+
+        <a href="staff-dashboard.html" class="active">
+            <i class="bi bi-grid"></i> Dashboard
+        </a>
+
+        <a href="#myCounter">
+            <i class="bi bi-display"></i> My Counter
+        </a>
+
+        <a href="#queue">
+            <i class="bi bi-people"></i> Queue Management
+        </a>
+
+        <a href="#history">
+            <i class="bi bi-clock-history"></i> Service History
+        </a>
+
+        <a href="#settings">
+            <i class="bi bi-gear"></i> Settings
+        </a>
+
+        <hr style="border-color:#60758d;">
+
+        <a href="login.html">
+            <i class="bi bi-box-arrow-left"></i> Logout
+        </a>
+
+    </div>
+
+
+    <!-- Main Content -->
+
+    <div class="main-content">
+
+        <!-- Topbar -->
+
+        <div class="topbar">
+
+            <div>
+                <h5 class="fw-bold mb-1">Staff Dashboard</h5>
+                <small class="text-secondary">
+                    Manage your counter and serve customers efficiently.
+                </small>
+            </div>
+
+            <div class="profile">
+
+                <div class="text-end d-none d-sm-block">
+                    <strong class="d-block">Ahmed Ali</strong>
+                    <small class="text-secondary">Staff Member</small>
+                </div>
+
+                <div class="profile-icon">
+                    <i class="bi bi-person"></i>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Welcome Section -->
+
+        <div class="mb-4">
+
+            <h4 class="fw-bold" style="color:#142b4a;">
+                Welcome Back, Ahmed!
+            </h4>
+
+            <p class="text-secondary">
+                Here's an overview of your counter activity today.
+            </p>
+
+        </div>
+
+
+        <!-- Counter Information -->
+
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-6">
+
+                <div class="stat-card d-flex align-items-center gap-3">
+
+                    <div class="stat-icon"
+                        style="background:#e8eef7;color:#142b4a;">
+
+                        <i class="bi bi-building"></i>
+
+                    </div>
+
+                    <div>
+                        <p>Assigned Department</p>
+                        <h5 class="fw-bold mb-0">Fee Submission</h5>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <div class="stat-card d-flex align-items-center gap-3">
+
+                    <div class="stat-icon"
+                        style="background:#e4f3ec;color:#23834c;">
+
+                        <i class="bi bi-display"></i>
+
+                    </div>
+
+                    <div>
+                        <p>Assigned Counter</p>
+                        <h5 class="fw-bold mb-0">Counter 02</h5>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Statistics -->
+
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon"
+                        style="background:#e8eef7;color:#142b4a;">
+
+                        <i class="bi bi-people"></i>
+
+                    </div>
+
+                    <h3>18</h3>
+                    <p>Customers Served Today</p>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon"
+                        style="background:#fff3dc;color:#c38b24;">
+
+                        <i class="bi bi-hourglass-split"></i>
+
+                    </div>
+
+                    <h3>12</h3>
+                    <p>Customers Waiting</p>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon"
+                        style="background:#e0f4e9;color:#23834c;">
+
+                        <i class="bi bi-check-circle"></i>
+
+                    </div>
+
+                    <h3>95%</h3>
+                    <p>Service Completion Rate</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Queue Management -->
+
+        <div class="row g-4 mb-4">
+
+            <!-- Current Token -->
+
+            <div class="col-lg-5" id="myCounter">
+
+                <div class="content-card">
+
+                    <h5 class="section-title">
+                        <i class="bi bi-person-badge me-2"></i>
+                        Currently Serving
+                    </h5>
+
+                    <div class="current-token">
+
+                        <span class="token-label">
+                            CURRENT TOKEN NUMBER
+                        </span>
+
+                        <div class="token-number">
+                            A-024
+                        </div>
+
+                        <span class="badge bg-success">
+                            In Progress
+                        </span>
+
+                        <hr>
+
+                        <h6 class="fw-bold mb-1">
+                            Customer #024
+                        </h6>
+
+                        <small class="text-secondary">
+                            Fee Submission Department
+                        </small>
+
+                    </div>
+
+
+                    <div class="d-grid gap-2">
+
+                        <button class="btn-primary-custom">
+                            <i class="bi bi-check-circle me-2"></i>
+                            Complete Service
+                        </button>
+
+                        <div class="row g-2">
+
+                            <div class="col-6">
+
+                                <button class="btn-outline-custom w-100">
+                                    <i class="bi bi-skip-forward me-1"></i>
+                                    Skip
+                                </button>
+
+                            </div>
+
+                            <div class="col-6">
+
+                                <button class="btn-outline-custom w-100">
+                                    <i class="bi bi-arrow-repeat me-1"></i>
+                                    Recall
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Queue Overview -->
+
+            <div class="col-lg-7" id="queue">
+
+                <div class="content-card">
+
+                    <div class="d-flex justify-content-between
+                        align-items-center mb-3">
+
+                        <h5 class="section-title mb-0">
+                            <i class="bi bi-list-ol me-2"></i>
+                            Waiting Queue
+                        </h5>
+
+                        <span class="badge bg-light text-dark">
+                            12 Waiting
+                        </span>
+
+                    </div>
+
+
+                    <div class="table-responsive">
+
+                        <table class="table">
+
+                            <thead>
+
+                                <tr>
+                                    <th>Token</th>
+                                    <th>Customer</th>
+                                    <th>Arrival</th>
+                                    <th>Status</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+                                    <td class="fw-bold">A-025</td>
+                                    <td>Customer 025</td>
+                                    <td>10:35 AM</td>
+                                    <td>
+                                        <span class="badge-waiting">
+                                            Waiting
+                                        </span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="fw-bold">A-026</td>
+                                    <td>Customer 026</td>
+                                    <td>10:38 AM</td>
+                                    <td>
+                                        <span class="badge-waiting">
+                                            Waiting
+                                        </span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="fw-bold">A-027</td>
+                                    <td>Customer 027</td>
+                                    <td>10:42 AM</td>
+                                    <td>
+                                        <span class="badge-waiting">
+                                            Waiting
+                                        </span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="fw-bold">A-028</td>
+                                    <td>Customer 028</td>
+                                    <td>10:45 AM</td>
+                                    <td>
+                                        <span class="badge-waiting">
+                                            Waiting
+                                        </span>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <button class="btn-primary-custom w-100 mt-2">
+
+                        <i class="bi bi-megaphone me-2"></i>
+                        Call Next Customer
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Recent Activity -->
+
+        <div class="content-card mb-4" id="history">
+
+            <div class="d-flex justify-content-between
+                align-items-center mb-3">
+
+                <h5 class="section-title mb-0">
+                    <i class="bi bi-clock-history me-2"></i>
+                    Recent Service Activity
+                </h5>
+
+                <a href="#" class="text-decoration-none small"
+                    style="color:#142b4a;">
+
+                    View History
+
+                </a>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Token Number</th>
+                            <th>Customer</th>
+                            <th>Service Time</th>
+                            <th>Status</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td class="fw-bold">A-023</td>
+
+                            <td>Customer 023</td>
+
+                            <td>10:28 AM</td>
+
+                            <td>
+                                <span class="badge-completed">
+                                    Completed
+                                </span>
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td class="fw-bold">A-022</td>
+
+                            <td>Customer 022</td>
+
+                            <td>10:20 AM</td>
+
+                            <td>
+                                <span class="badge-completed">
+                                    Completed
+                                </span>
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td class="fw-bold">A-021</td>
+
+                            <td>Customer 021</td>
+
+                            <td>10:12 AM</td>
+
+                            <td>
+                                <span class="badge-completed">
+                                    Completed
+                                </span>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- Footer -->
+
+        <div class="text-center text-secondary small mt-4 mb-3">
+
+            © 2026 QueueLess. All Rights Reserved.
+
+        </div>
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+</body>
+</html>
