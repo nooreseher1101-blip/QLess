@@ -1,17 +1,15 @@
-﻿#nullable disable
+﻿
+#nullable disable
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace WebApplication2.Areas.Identity.Pages.Account
+namespace QLessProject.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
@@ -32,8 +30,6 @@ namespace WebApplication2.Areas.Identity.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; }
 
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
-
         public string ReturnUrl { get; set; }
 
         [TempData]
@@ -49,7 +45,6 @@ namespace WebApplication2.Areas.Identity.Pages.Account
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
-            [Display(Name = "Remember me?")]
             public bool RememberMe { get; set; }
         }
 
@@ -60,91 +55,70 @@ namespace WebApplication2.Areas.Identity.Pages.Account
                 ModelState.AddModelError(string.Empty, ErrorMessage);
             }
 
-            returnUrl ??= Url.Content("~/");
+            ReturnUrl = returnUrl ?? Url.Content("~/");
 
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-
-            ReturnUrl = returnUrl;
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
+            ReturnUrl = returnUrl ?? Url.Content("~/");
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(
-                    Input.Email,
-                    Input.Password,
-                    Input.RememberMe,
-                    lockoutOnFailure: false
-                );
+                return Page();
+            }
 
-                if (result.Succeeded)
+            var result = await _signInManager.PasswordSignInAsync(
+                Input.Email,
+                Input.Password,
+                Input.RememberMe,
+                lockoutOnFailure: false
+            );
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User logged in.");
+
+                var user = await _userManager.FindByEmailAsync(Input.Email);
+
+                if (await _userManager.IsInRoleAsync(user, "Admin"))
                 {
-                    _logger.LogInformation("User logged in.");
-
-                    // Find logged-in user
-                    var user = await _userManager.FindByEmailAsync(Input.Email);
-
-                    if (user != null)
-                    {
-                        // Check Admin role
-                        if (await _userManager.IsInRoleAsync(user, "Admin"))
-                        {
-                            return RedirectToAction("Index", "Admin");
-                        }
-
-                        // Check Staff role
-                        if (await _userManager.IsInRoleAsync(user, "Staff"))
-                        {
-                            return RedirectToAction("Index", "Staff");
-                        }
-
-                        // Check User role
-                        if (await _userManager.IsInRoleAsync(user, "User"))
-                        {
-                            return RedirectToAction("Index", "User");
-                        }
-                    }
-
-                    // Account has no assigned role
-                    await _signInManager.SignOutAsync();
-
-                    ModelState.AddModelError(
-                        string.Empty,
-                        "Your account does not have an assigned role. Please contact the administrator."
-                    );
-
-                    return Page();
+                    return RedirectToAction("Index", "Admin");
                 }
 
-                if (result.RequiresTwoFactor)
+                if (await _userManager.IsInRoleAsync(user, "Staff"))
                 {
-                    return RedirectToPage("./LoginWith2fa", new
-                    {
-                        ReturnUrl = returnUrl,
-                        RememberMe = Input.RememberMe
-                    });
+                    return RedirectToAction("Index", "Staff");
                 }
 
-                if (result.IsLockedOut)
+                if (await _userManager.IsInRoleAsync(user, "User"))
                 {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
+                    return RedirectToAction("Index", "User");
                 }
+
+                await _signInManager.SignOutAsync();
 
                 ModelState.AddModelError(
                     string.Empty,
-                    "Invalid login attempt."
+                    "Your account does not have an assigned role."
                 );
 
                 return Page();
             }
+
+            if (result.RequiresTwoFactor)
+            {
+                return RedirectToPage("./LoginWith2fa",
+                    new { ReturnUrl = ReturnUrl, RememberMe = Input.RememberMe });
+            }
+
+            if (result.IsLockedOut)
+            {
+                return RedirectToPage("./Lockout");
+            }
+
+            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 
             return Page();
         }

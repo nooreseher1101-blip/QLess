@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace WebApplication2.Data.Migrations
+namespace QLessProject.Data.Migrations
 {
     public partial class CreateIdentitySchema : Migration
     {

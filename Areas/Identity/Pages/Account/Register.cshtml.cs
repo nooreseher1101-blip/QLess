@@ -1,17 +1,15 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-#nullable disable
+﻿#nullable disable
 
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Security.Claims;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -20,7 +18,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
-namespace WebApplication2.Areas.Identity.Pages.Account
+namespace QLessProject.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
@@ -60,14 +58,14 @@ namespace WebApplication2.Areas.Identity.Pages.Account
             public string FullName { get; set; }
 
             [Required]
-            [EmailAddress]
-            [Display(Name = "Email")]
-            public string Email { get; set; }
-
-            [Required]
             [Phone]
             [Display(Name = "Phone Number")]
             public string PhoneNumber { get; set; }
+
+            [Required]
+            [EmailAddress]
+            [Display(Name = "Email")]
+            public string Email { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -83,56 +81,74 @@ namespace WebApplication2.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            ReturnUrl = returnUrl;
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ReturnUrl = returnUrl ?? Url.Content("~/");
+
+            ExternalLogins =
+                (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ReturnUrl = returnUrl;
+
+            ExternalLogins =
+                (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
 
-                user.PhoneNumber = Input.PhoneNumber;
+                await _userStore.SetUserNameAsync(
+                    user, Input.Email, CancellationToken.None);
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                await _emailStore.SetEmailAsync(
+                    user, Input.Email, CancellationToken.None);
 
-                var result = await _userManager.CreateAsync(user, Input.Password);
+                var result = await _userManager.CreateAsync(
+                    user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                    // Assign default User role
-                    var roleResult = await _userManager.AddToRoleAsync(user, "User");
+                    // Save phone number
+                    await _userManager.SetPhoneNumberAsync(
+                        user, Input.PhoneNumber);
 
-                    if (!roleResult.Succeeded)
-                    {
-                        foreach (var error in roleResult.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error.Description);
-                        }
-
-                        return Page();
-                    }
-
-                    // Save user's full name
+                    // Save full name
                     await _userManager.AddClaimAsync(
                         user,
                         new Claim("FullName", Input.FullName)
                     );
 
-                    _logger.LogInformation("User created a new account with password.");
+                    // Every new registration gets User role
+                    var roleResult = await _userManager.AddToRoleAsync(
+                        user, "User");
 
+                    if (!roleResult.Succeeded)
+                    {
+                        await _userManager.DeleteAsync(user);
 
-                    var userId = await _userManager.GetUserIdAsync(user);
+                        foreach (var error in roleResult.Errors)
+                        {
+                            ModelState.AddModelError(
+                                string.Empty, error.Description);
+                        }
 
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        return Page();
+                    }
 
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    _logger.LogInformation(
+                        "New user registered successfully.");
+
+                    var userId =
+                        await _userManager.GetUserIdAsync(user);
+
+                    var code =
+                        await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                    code = WebEncoders.Base64UrlEncode(
+                        Encoding.UTF8.GetBytes(code));
 
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
@@ -154,22 +170,25 @@ namespace WebApplication2.Areas.Identity.Pages.Account
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        return RedirectToPage("RegisterConfirmation", new
-                        {
-                            email = Input.Email,
-                            returnUrl = returnUrl
-                        });
+                        return RedirectToPage(
+                            "RegisterConfirmation",
+                            new
+                            {
+                                email = Input.Email,
+                                returnUrl = returnUrl
+                            });
                     }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
+
+                    await _signInManager.SignInAsync(
+                        user, isPersistent: false);
+
+                    return RedirectToAction("Index", "User");
                 }
 
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    ModelState.AddModelError(
+                        string.Empty, error.Description);
                 }
             }
 
@@ -186,8 +205,7 @@ namespace WebApplication2.Areas.Identity.Pages.Account
             {
                 throw new InvalidOperationException(
                     $"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml"
+                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor."
                 );
             }
         }
@@ -197,8 +215,7 @@ namespace WebApplication2.Areas.Identity.Pages.Account
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException(
-                    "The default UI requires a user store with email support."
-                );
+                    "The default UI requires a user store with email support.");
             }
 
             return (IUserEmailStore<IdentityUser>)_userStore;

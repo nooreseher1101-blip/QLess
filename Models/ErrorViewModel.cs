@@ -1,4 +1,4 @@
-namespace WebApplication2.Models
+namespace QLessProject.Models
 {
     public class ErrorViewModel
     {

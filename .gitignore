@@ -1,4 +1,6 @@
-bin/
-obj/
-.vs/
-*.user
+﻿namespace QLessProject
+{
+    public class _
+    {
+    }
+}
